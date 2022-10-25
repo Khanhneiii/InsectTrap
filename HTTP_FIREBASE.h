@@ -1,7 +1,7 @@
 #include "Waveshare_SIM7600.h"
 #include "Base64.h"
 
-String URL = "https://espsim-d13bb-default-rtdb.firebaseio.com";
+String URL = "https://inset-catch-electric.herokuapp.com/updateDeviceImg";
 String key = "3piBtW9aFPfNfbIREVnBnIGEGCPQ90Ss1HUTKAgX";
 String stringRecv = "";
 bool isRecieved = false;
@@ -9,7 +9,7 @@ bool isRecieved = false;
 bool USE_SSL = false;
 #define DELAY_MS 1500
 
-void post_data(String data,String data_path)
+void post_data(String data)
 {
 //  SimSerial.println("AT");
   Serial.println("AT");
@@ -29,7 +29,7 @@ void post_data(String data,String data_path)
     delay(DELAY_MS);
   }
   
-  Serial.println("AT+HTTPPARA=\"URL\"," "\"" +URL+data_path+"?auth="+key + "\"");
+  Serial.println("AT+HTTPPARA=\"URL\", \"" +URL + "\"");
   delay(DELAY_MS);
   Serial.println("AT+HTTPPARA=\"CONTENT\",\"application/json\"");
   delay(DELAY_MS);

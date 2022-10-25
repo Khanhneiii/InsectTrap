@@ -1,6 +1,6 @@
 #include <FastLED.h>
 
-#define LED_PIN     15
+#define LED_PIN     13
 #define NUM_LEDS    16
 #define BRIGHTNESS  64
 #define LED_TYPE    WS2812
@@ -23,10 +23,14 @@ void setup_fastled() {
     currentBlending = LINEARBLEND;
 }
 
-void Config_led(String &hexled){
+void Config_led(String &hexled,int brightness){
     char *hex = const_cast<char*>(hexled.c_str());
     uint32_t color = strtoul(hex, nullptr, HEX);
-    for( int i = 0; i < NUM_LEDS; ++i) leds[i] = color;       
+    for( int i = 0; i < NUM_LEDS; ++i) {
+      leds[i] = color;  
+      FastLED.setBrightness( brightness );
+    }
+         
     FastLED.show();
     FastLED.delay(1000 / UPDATES_PER_SECOND);
 }

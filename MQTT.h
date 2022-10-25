@@ -1,13 +1,12 @@
 
 String Broker = "tcp://test.mosquitto.org:1883";
-String SubTopic = "/topic/my/subscription/1";
+String SubTopic = "/save";
 String client_name = "Sim";
 int delay_time = 1500;
 int qos = 1;
-String postdata = "DATA";
-String postimage = "IMAGE";
-String UPDATE = "UPDATE";
-String slp = "SLEEP";
+String POSTDATA = "sendNewDeviceData";
+String POSTIMAGE = "sendNewImg";
+String UPDATE = "userUpdateDeviceData";
 
 void MQTT_init(){
   Serial.println("AT+CMQTTSTART");
@@ -67,10 +66,9 @@ int recieved(String &mess){
       
 //      Serial.println(message);
       mess = message;
-      if (message == postdata) return 1;
-      else if (message == postimage) return 2;
-      else if (message == UPDATE) return 3;
-      else if (message == slp) return 4;
+      if (message.indexOf(POSTDATA)) return 1;
+      else if (message.indexOf(POSTIMAGE)) return 2;
+      else if (message.indexOf(UPDATE)) return 3;
     }
   }
    return 0;  

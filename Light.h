@@ -1,5 +1,5 @@
 
-int sensorPin = 13; // Declaration of the input pin
+int sensorPin = 12; // Declaration of the input pin
 float read_light_data()
 {    
   // Current voltage will be measured...
