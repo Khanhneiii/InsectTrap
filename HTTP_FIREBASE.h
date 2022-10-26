@@ -1,7 +1,7 @@
 #include "Waveshare_SIM7600.h"
 #include "Base64.h"
 
-String URL = "https://inset-catch-electric.herokuapp.com/updateDeviceImg";
+String URL = "https://inset-catch-electric.herokuapp.com/updateDeviceData";
 String key = "3piBtW9aFPfNfbIREVnBnIGEGCPQ90Ss1HUTKAgX";
 String stringRecv = "";
 bool isRecieved = false;
@@ -38,7 +38,7 @@ void post_data(String data)
   delay(DELAY_MS);
   
   Serial.println(data);
-  delay(DELAY_MS);
+  delay(10000);
   Serial.println("AT+HTTPACTION=1");
   delay(3000);
 

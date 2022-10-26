@@ -1,11 +1,10 @@
 
-#define POTI_PIN 12
+#define POTI_PIN 15
 
 
 long PotiValue ;
 float giatriINra,giatriPhanTram,giatriTB;
-void setup() {
-  Serial.begin(115200);
+void PIN_setup() {
   pinMode(POTI_PIN,INPUT);
 
 }
