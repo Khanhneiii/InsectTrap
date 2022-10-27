@@ -2,11 +2,11 @@
 String Broker = "tcp://test.mosquitto.org:1883";
 String SubTopic = "/save";
 String client_name = "Sim";
-int delay_time = 3000;
+int delay_time = 4000;
 int qos = 1;
 String POSTDATA = "sendNewDeviceData";
 String POSTIMAGE = "sendNewImg";
-String UPDATE = "userUpdateDeviceData";
+String UPDATE = "updateDeviceData";
 
 void MQTT_init(){
   Serial.println("AT+CMQTTSTART");

@@ -54,6 +54,8 @@ bool flagsleep = true;
 
 void Get_SendDataSensor()
 {
+  PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0TXD_U, FUNC_U0TXD_U0TXD);
+  PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0RXD_U, FUNC_U0RXD_U0RXD);
   PACKET["id"] = ID;
   float h = dht.readHumidity();
   Data["humi"] = 10;
@@ -62,31 +64,31 @@ void Get_SendDataSensor()
   Data["temp"] = 15;
 
   //get image
-  Data["img"] = Photo2Base64();
+ // Data["img"] = Photo2Base64();
 
-  float light = read_light_data();
+  float light = 15;
   Data["optic"] = 14;
 
   //  GPS read data
-  sim7600.GPSPositioning(Lat, Log, Date, Time);
-  if (Lat != 0 && Log != 0) {
-    strLat = String(Lat, 6);
+ // sim7600.GPSPositioning(Lat, Log, Date, Time);
+//  if (Lat != 0 && Log != 0) {
+//    strLat = String(Lat, 6);
     GPS["latitude"] = "10.21414";
-    strLog = String(Log, 6);
+//    strLog = String(Log, 6);
     GPS["longitude"] = "213.2313131";
-    strTime = String(Time, 0);
-    String hourTime = strTime.substring(0, 1);
-    current_time = hourTime.toInt() * 60;
-    String minTime = strTime.substring(2, 3);
-    current_time += minTime.toInt();
-    //GPS["Time"] = strTime;
-    //GPS["Date"] = Date;
-  }
-  Data["coordinates"] = GPS;
+//    strTime = String(Time, 0);
+//    String hourTime = strTime.substring(0, 1);
+//    current_time = hourTime.toInt() * 60;
+//    String minTime = strTime.substring(2, 3);
+//    current_time += minTime.toInt();
+//    //GPS["Time"] = strTime;
+//    //GPS["Date"] = Date;
+//  }
+  //Data["coordinates"] = GPS;
   Data["battery"] = String(Energy());
   Data["rain"] = isRaining;
   Data["statusGrid"] = GridStatus;
-  PACKET["Data"] = Data;
+  PACKET["data"] = Data;
   post_data(JSON.stringify(PACKET));
 
 }
@@ -104,6 +106,7 @@ void update_data(String mess) {
   int idx = mess.indexOf('\n');
   int idx1 = mess.indexOf("0x");
   String ledColor = mess.substring(idx1, idx1 + 8);
+  Serial.println(ledColor);
   hexled = ledColor;
 
   idx1 = mess.indexOf("brightness");
@@ -111,6 +114,7 @@ void update_data(String mess) {
   int t_idx = temp.indexOf(':');
   int t_idx2 = temp.indexOf(',');
   String brightness_str = temp.substring(t_idx + 1, t_idx2);
+  Serial.println(brightness_str);
   brightness = brightness_str.toInt() * 100 / 255;
   Config_led(hexled, brightness);
 
@@ -119,6 +123,7 @@ void update_data(String mess) {
   t_idx = temp.indexOf(':');
   t_idx2 = temp.indexOf(',');
   String timeSend = temp.substring(t_idx + 1, t_idx2);
+  Serial.println(timeSend);
   timer_value = timeSend.toInt() * 60;
   if (is_timer_start) {
     ESP_ERROR_CHECK(esp_timer_stop(periodic_timer));
@@ -136,10 +141,10 @@ void update_data(String mess) {
   t_idx = temp.indexOf(':');
   t_idx2 = temp.indexOf('}');
   String minStart = temp.substring(t_idx + 1, t_idx2);
+  Serial.println(minStart);
   wakeup_time = hourStart.toInt() * 60 + minStart.toInt();
 
   int idx_n = mess.indexOf("timeEnd");
-  Serial.println(idx_n);
   String temp2 = mess.substring(idx_n);
   Serial.println(temp2);
   idx1 = temp2.indexOf("hour");
@@ -197,6 +202,7 @@ void setup() {
   delay(500);
   MQTT_init();
   setup_fastled();
+  Config_led(hexled, brightness);
   //sim7600.PowerOn();
   delay(500);
   pinMode(RELAYPIN, OUTPUT);
@@ -217,19 +223,25 @@ void loop() {
     }
     Serial.println("Sleep");
       wakeup_cause = sleep();
+      
       if (wakeup_cause == ESP_SLEEP_WAKEUP_TIMER) {
+        Serial.println("Timer wake up");
         Get_SendDataSensor();
         // get time
         // if (gps_time > wakeup_time) flagsleep = false;
         if (current_time > wakeup_time) flagsleep = false;
       }
       if (wakeup_cause == ESP_SLEEP_WAKEUP_GPIO) {
+       //TEST 
         int mess = recieved(MQTTMessage);
         delay(1000);
-        Serial.println(MQTTMessage);
-        Serial.println(mess);
         delay(3000);
-        if (mess == DATA) Get_SendDataSensor();
+        if (mess == DATA) {
+          
+          digitalWrite(RELAYPIN, LOW);
+          Get_SendDataSensor();
+          digitalWrite(RELAYPIN, HIGH);
+        }
         else if (mess == IMAGE) post_data(Photo2Base64());
         else if (mess == UPDATE) update_data(MQTTMessage);
       }
