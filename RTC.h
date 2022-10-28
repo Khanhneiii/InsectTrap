@@ -35,7 +35,7 @@ void loop(){
   printLocalTime();
 }
 
-void printLocalTime(){
+void printLocalTime(String ){
   struct tm timeinfo;
   if(!getLocalTime(&timeinfo)){
     Serial.println("Failed to obtain time");
