@@ -70,21 +70,21 @@ void Get_SendDataSensor()
   Data["optic"] = 14;
 
   //  GPS read data
- // sim7600.GPSPositioning(Lat, Log, Date, Time);
-//  if (Lat != 0 && Log != 0) {
-//    strLat = String(Lat, 6);
+//  sim7600.GPSPositioning(Lat, Log, Date, Time);
+  if (Lat != 0 && Log != 0) {
+    strLat = String(Lat, 6);
     GPS["latitude"] = "10.21414";
-//    strLog = String(Log, 6);
+    strLog = String(Log, 6);
     GPS["longitude"] = "213.2313131";
-//    strTime = String(Time, 0);
-//    String hourTime = strTime.substring(0, 1);
-//    current_time = hourTime.toInt() * 60;
-//    String minTime = strTime.substring(2, 3);
-//    current_time += minTime.toInt();
-//    //GPS["Time"] = strTime;
-//    //GPS["Date"] = Date;
-//  }
-  //Data["coordinates"] = GPS;
+    strTime = String(Time, 0);
+    String hourTime = strTime.substring(0, 1);
+    current_time = hourTime.toInt() * 60;
+    String minTime = strTime.substring(2, 3);
+    current_time += minTime.toInt();
+    //GPS["Time"] = strTime;
+    //GPS["Date"] = Date;
+  }
+  Data["coordinates"] = GPS;
   Data["battery"] = String(Energy());
   Data["rain"] = isRaining;
   Data["statusGrid"] = GridStatus;
@@ -199,7 +199,7 @@ void setup() {
   Serial.begin(115200);
   dht.begin();
   camera_init();
-  delay(500);
+  delay(15000);
   MQTT_init();
   setup_fastled();
   Config_led(hexled, brightness);

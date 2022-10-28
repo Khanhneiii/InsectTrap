@@ -55,7 +55,7 @@ void Sim7x00::PowerOn(){
     // waits for an answer from the module
     while (answer == 0) {     // Send AT every two seconds and wait for the answer
       answer = sendATcommand("AT", "OK", 2000);
-	  delay(1000);
+    delay(1000);
     }
 
   }
